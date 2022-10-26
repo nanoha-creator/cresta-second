@@ -1,60 +1,159 @@
 @use "mixin" as m;
 
-/*------------------------------------------------
+/* ------------------------------------------------
     ファイル名：_main.scss
     機能：webページ全体のスタイルを記述する
---------------------------------------------------*/
+    コーディングスタイル：PC幅を基準、PRECSS記法
+-------------------------------------------------- */
 
-/*----------------------
+/* ----------------------
   レイアウト
-------------------------*/
+------------------------ */
+
 /* ヘッダー */
 .ly_header {
   position: absolute;
   z-index: 99;
-  width: 100vw;
+  width: 100%;
   padding: 19px 0;
+
+  @include m.media-query(md) {
+    padding: 30px 0;
+  }
 
   /* Contactページ用 */
   &.ly_header__contact {
     padding: 40px 0;
+    @include m.media-query(md) {
+      padding: 30px 0;
+    }
   }
 
   /* 途中から背景色をつける */
   &.ly_header__bg {
     position: fixed;
     padding: 30px 0;
-
     background-color: #282f35;
   }
 }
 
 /* ヘッダー（内側） */
 .ly_header_inner {
-  padding: 0 min(calc(7.5rem + ((1vw - 14.4px) * 15.625)), 120px);
+  padding-top: 0;
+  padding-bottom: 0;
+  @include m.viewport-scale(padding-right, lg, 120px, md, 15px);
+  @include m.viewport-scale(padding-left, lg, 120px, md, 15px);
+
+  @include m.media-query(md) {
+    padding: 0 15px;
+  }
 }
 
 /* セクション */
 .ly_section {
   width: 100vw;
+
+  // 背景画像を設定する
+  &.ly_section__bgimg {
+    background-position: center center;
+    background-size: cover;
+
+    &[id="sec_works"] {
+      background-image: url("../img/works-bgi@2x.jpg");
+    }
+
+    &[id="sec_contact"] {
+      background-image: url("../img/contact-bgi@2x.jpg");
+    }
+  }
 }
 
 /* コンテンツエリア */
 .ly_cont {
-  width: 100vw;
-  padding: 100px min(calc(7.5rem + ((1vw - 14.4px) * 15.625)), 120px) 70px
-    min(calc(7.5rem + ((1vw - 14.4px) * 15.625)), 120px);
+  position: relative;
+  width: 100%;
+  padding-top: 100px;
+  padding-bottom: 192px;
+  @include m.viewport-scale(padding-right, lg, 120px, md, 15px);
+  @include m.viewport-scale(padding-left, lg, 120px, md, 15px);
+
+  @include m.media-query(md) {
+    // 修正理由：透過文字を疑似要素で実現するため
+    //          その文字高分余白をとる
+    padding: 100px 15px 95px;
+  }
+
+  &::after {
+    position: absolute;
+    display: block;
+    content: attr(data-name);
+    opacity: 0.05;
+
+    // 文字
+    color: #171717;
+    font-weight: bold;
+    font-size: 5.625rem;
+    @include m.letterSpacingAdjustment(0.05em);
+
+    white-space: nowrap;
+
+    @include m.media-query(md) {
+      font-weight: bold;
+      font-size: 2.5rem;
+    }
+  }
+
+  // 「Our Concept」「Our Service」の場合
+  &[data-name="Our Concept"]::after,
+  &[data-name="Our Service"]::after {
+    right: 120px;
+    bottom: 70px;
+
+    @include m.media-query(md) {
+      right: 15px;
+      bottom: 40px;
+    }
+  }
+
+  // 「Our Works」「Contact Us」の場合
+  &[data-name="Our Works"]::after,
+  &[data-name="Contact Us"]::after {
+    color: #fff;
+    left: 120px;
+    bottom: 70px;
+
+    @include m.media-query(md) {
+      left: 15px;
+      bottom: 45px;
+    }
+  }
 }
 
 /* コンテンツエリア（内側） */
 .ly_cont_inner {
-  padding: 80px min(calc(6.25rem + ((1vw - 14.4px) * 14.7321)), 100px) 70px
-    min(calc(6.25rem + ((1vw - 14.4px) * 14.7321)), 100px);
+  @include m.viewport-scale(padding-top, lg, 80px, md, 50px);
+  @include m.viewport-scale(padding-right, lg, 100px, md, 0px);
+  @include m.viewport-scale(padding-bottom, lg, 70px, md, 40px);
+  @include m.viewport-scale(padding-left, lg, 100px, md, 0px);
+
   margin: 0 auto;
+
+  @include m.media-query(md) {
+    padding: 50px 0 40px;
+    margin: 0 auto;
+  }
 
   /* Conceptセクション用 */
   &.ly_cont_inner__concept {
-    padding-top: 70px;
+    @include m.viewport-scale(padding-top, lg, 70px, md, 50px);
+  }
+
+  /* Service/Contactセクション用 */
+  &.ly_cont_inner__service,
+  &.ly_cont_inner__contact {
+    @include m.media-query(md) {
+      @include m.viewport-scale(padding-top, lg, 80px, md, 50px);
+    }
   }
 }
 
@@ -66,42 +165,91 @@
 
 /* Contactページ用コンテンツエリア */
 .pg_contact .ly_cont {
-  padding: 97px 0 80px 0;
+  padding: 97px 0 80px;
 }
 
 /* フッター */
 .ly_footer {
   width: 100vw;
-  text-align: center;
 
   /* 余白設定 */
   padding: 30px 0;
   margin: 0 auto;
 }
 
-/*----------------------
+/* ----------------------
   ヘッダー
-------------------------*/
+------------------------ */
+
 /* ヘッダーに含めるモジュール類のまとまり */
 .bl_headerUtils {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  // aタグの邪魔にならないように調整
+  // フォントサイズがそのままだと余分な余白が生まれる
+  h1 {
+    font-size: 1px;
+    margin: 0;
+  }
 }
 
 /* サイトタイトル */
 .bl_headerUtils_ttl {
   /* 文字設定 */
-  color: #ffffff;
+  color: #fff;
   text-decoration: none;
-  font-size: 1.625rem;
+  font-size: 1.5rem;
   font-weight: bold;
   font-style: italic;
   @include m.letterSpacingAdjustment(0.05em);
+
   white-space: nowrap;
+
+  @include m.media-query(md) {
+    font-size: 1.625rem;
+  }
 
   /* 余白設定 */
   margin: 0;
+}
+
+/* ヘッダーナビゲーション（内側） */
+.bl_headerNav {
+  @include m.media-query(md) {
+    /* タブレット幅以下では、ナビゲーションを非表示（ボタンで表示させる） */
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+
+    /* 透明 */
+    opacity: 0;
+
+    /* 
+  ふわっと透明にするアニメーション
+  基本は黒背景を非表示
+  ハンバーガーボタン押下でふわっと黒背景が表示される 
+  */
+    visibility: hidden;
+    width: 100vw;
+    height: 100vh;
+    background-color: #1b1310;
+    transition: all 0.5s;
+  }
+}
+
+/* 
+  ハンバーガーボタンが押下後、黒背景にする 
+  ↑の設定(transition)があるので、0.5sかけて徐々に表れる
+  */
+.bl_headerNav.is_fade {
+  @include m.media-query(md) {
+    /* 不透明（黒背景） */
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 /* ヘッダーナビゲーション（内側） */
@@ -109,8 +257,18 @@
   display: flex;
   padding: 0;
   margin: 0;
-
   list-style: none;
+
+  @include m.media-query(md) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding-right: 0;
+    margin-bottom: -30px;
+  }
 
   & > *:last-child {
     margin-right: 0;
@@ -118,16 +276,22 @@
 
   & > li {
     margin-right: 30px;
+
+    @include m.media-query(md) {
+      margin-right: 0;
+      margin-bottom: 30px;
+    }
   }
 }
 
 /* ヘッダーナビゲーション（a要素） */
 .bl_headerNav_link {
   /* 文字設定 */
-  color: #ffffff;
+  color: #fff;
   font-weight: bold;
   font-style: italic;
   @include m.letterSpacingAdjustment(0.05em);
+
   text-decoration: none;
 }
 
@@ -135,11 +299,90 @@
 .bl_toggleBtn {
   /* タブレット幅以下では、ボタンでナビゲーションを表示させる */
   display: none;
+
+  @include m.media-query(md) {
+    position: relative;
+    z-index: 3;
+    display: block;
+    width: 30px;
+    height: 20px;
+
+    /* 元のデザインを消去 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    border: none;
+
+    /* 押せそうなボタンを表現 */
+    cursor: pointer;
+
+    /* 余白設定 */
+    margin: 0;
+    padding: 0;
+  }
 }
 
-/*----------------------
+/* ハンバーガーボタン（クローズ）のスタイル：共通 */
+.bl_toggleBtn_bar {
+  @include m.media-query(md) {
+    position: absolute;
+    display: block;
+    width: 30px;
+    height: 3px;
+    background-color: #fff;
+    transition: all 0.3s;
+
+    /* 一段目のバー */
+    &.bl_toggleBtn_bar__top {
+      top: 0;
+    }
+
+    /* 二段目のバー */
+    &.bl_toggleBtn_bar__mid {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* 三段目のバー */
+    &.bl_toggleBtn_bar__bottom {
+      bottom: 0;
+    }
+  }
+}
+
+/* ハンバーガーボタン（オープン）一段目のバー */
+.bl_toggleBtn.is_close .bl_toggleBtn_bar.bl_toggleBtn_bar__top {
+  @include m.media-query(md) {
+    transform: translate(5px, 0) rotate(45deg);
+  }
+}
+
+/* ハンバーガーボタン（オープン）二段目のバー */
+.bl_toggleBtn.is_close .bl_toggleBtn_bar.bl_toggleBtn_bar__mid {
+  @include m.media-query(md) {
+    opacity: 0;
+  }
+}
+
+/* ハンバーガーボタン（オープン）三段目のバー */
+.bl_toggleBtn.is_close .bl_toggleBtn_bar.bl_toggleBtn_bar__bottom {
+  @include m.media-query(md) {
+    transform: translate(5px, -17px) rotate(-45deg);
+  }
+}
+
+/* ハンバーガーボタンオープン時はスクロールしない */
+.is_noscroll {
+  @include m.media-query(md) {
+    overflow: hidden;
+  }
+}
+
+/* ----------------------
   メインビジュアル
-------------------------*/
+------------------------ */
+
 /* ジャンボトロン */
 .bl_jumbotron {
   height: 100vh;
@@ -153,7 +396,6 @@
 .bl_jumbotron_slide {
   padding: 0;
   margin: 0;
-
   list-style: none;
 }
 
@@ -175,8 +417,15 @@
 .bl_jumbotron_txt {
   position: absolute;
   top: 409px;
-
   text-align: center;
+
+  @include m.media-query(md) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
 }
 
 /* ジャンボトロン（メインコピー） */
@@ -185,25 +434,42 @@
   margin: 0;
 
   /* 文字設定 */
-  color: #ffffff;
-  font-size: min(calc(4.375rem + ((1vw - 0.9rem) * 4.9107)), 4.375rem);
+  color: #fff;
+  @include m.viewport-scale(font-size, lg, 70px, md, 37px);
+
   font-weight: bold;
   @include m.letterSpacingAdjustment(0.05em);
+
   white-space: nowrap;
+
+  @include m.media-query(md) {
+    font-size: 2.3125rem;
+  }
 }
 
 /* ジャンボトロン（サブコピー） */
 .bl_jumbotron_subcopy {
   /* 文字設定 */
-  color: #ffffff;
-  font-size: min(calc(2.5rem + ((1vw - 0.9rem) * 1.4881)), 2.5rem);
+  color: #fff;
+  @include m.viewport-scale(font-size, lg, 40px, md, 30px);
+
   font-weight: bold;
   @include m.letterSpacingAdjustment(0.05em);
+
   white-space: nowrap;
+
+  @include m.media-query(md) {
+    font-size: 1.875rem;
+    @include m.lineHeightAdjustment(1.666666);
+  }
 
   /* 余白設定 */
   padding-top: 20px;
   margin: 0;
+
+  @include m.media-query(md) {
+    padding-top: 50px;
+  }
 }
 
 /* メインビジュアル（コンタクトページ用） */
@@ -215,39 +481,79 @@
   height: 453px;
   width: 100vw;
 
+  @include m.media-query(md) {
+    height: 360px;
+  }
+
   /* 画像設定 */
-  background-image: url(../contact/img/contact-page-bgi@2x.jpg);
+  background-image: url("../contact/img/contact-page-bgi@2x.jpg");
   background-position: center bottom;
   background-size: cover;
 
-  /* 透過文字 */
-  .el_opacityTxt {
+  &::after {
+    display: block;
+    content: attr(data-name);
+    opacity: 0.05;
+
+    // 位置
     position: absolute;
-    bottom: 40px;
     left: 48px;
+    bottom: 40px;
+
+    @include m.media-query(md) {
+      left: 15px;
+    }
+
+    // 文字
+    color: #fff;
+    font-weight: bold;
+    font-size: 5.625rem;
+    @include m.letterSpacingAdjustment(0.05em);
+
+    @include m.media-query(md) {
+      font-weight: bold;
+      font-size: 2.5rem;
+    }
+
+    white-space: nowrap;
   }
 }
 
-/*----------------------
+/* ----------------------
   タイトル
-------------------------*/
+------------------------ */
+
 /* セクションタイトル */
 .el_h2Heading {
   display: inline-block;
   position: relative;
   margin-left: 100px;
 
+  @include m.media-query(md) {
+    margin-left: 0;
+  }
+
   /* タイトル文字 */
   & > h2 {
     display: inline-block;
+
     /* 文字設定 */
     font-size: 3.75rem;
     font-weight: bold;
     font-style: italic;
     @include m.letterSpacingAdjustment(0.05em);
 
+    @include m.media-query(md) {
+      font-size: 1.875rem;
+      @include m.letterSpacingAdjustment(0.05em);
+    }
+
     /* 余白設定 */
     margin: 0 230px 0 0;
+
+    @include m.media-query(md) {
+      margin: 0 121px 0 0;
+    }
   }
 
   /* 横のバー */
@@ -257,10 +563,13 @@
     right: 0;
     height: 5px;
     width: 200px;
-
     transform: translateY(-50%);
     content: "";
-    background-color: #000000;
+    background-color: #000;
+
+    @include m.media-query(md) {
+      width: 90px;
+    }
   }
 
   /* Works用タイトル */
@@ -270,19 +579,38 @@
 
     /* タイトル文字 */
     & > h2 {
-      color: #ffffff;
+      color: #fff;
       @include m.letterSpacingAdjustment(0.1em);
+
+      @include m.media-query(md) {
+        margin: 0 130px 0 0;
+      }
     }
 
     /* 横のバー */
     &::after {
-      background-color: #ffffff;
+      background-color: #fff;
+
+      @include m.media-query(md) {
+        width: 100px;
+      }
     }
   }
 
   /* Service用タイトル */
   &.el_h2Heading__service > h2 {
     @include m.letterSpacingAdjustment(0.1em);
+
+    @include m.media-query(md) {
+      margin: 0 130px 0 0;
+    }
+  }
+
+  /* Service用タイトル（横のバー） */
+  &.el_h2Heading__service::after {
+    @include m.media-query(md) {
+      width: 100px;
+    }
   }
 
   /* Contact用タイトル */
@@ -292,13 +620,21 @@
 
     /* タイトル文字 */
     & > h2 {
-      color: #ffffff;
+      color: #fff;
       @include m.letterSpacingAdjustment(0.1em);
+
+      @include m.media-query(md) {
+        margin: 0 130px 0 0;
+      }
     }
 
     /* 横のバー */
     &::after {
-      background-color: #ffffff;
+      background-color: #fff;
+
+      @include m.media-query(md) {
+        width: 100px;
+      }
     }
   }
 }
@@ -311,55 +647,92 @@
   left: 50%;
   transform: translate(-50%, -50%);
 
+  @include m.media-query(md) {
+    top: 175px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
   /* 文字設定 */
-  color: #ffffff;
+  color: #fff;
   font-size: 3.75rem;
   font-style: italic;
   font-weight: bold;
   @include m.letterSpacingAdjustment(0.1em);
 
+  @include m.media-query(md) {
+    font-size: 1.875rem;
+  }
+
   /* 余白設定 */
   margin: 0;
 }
 
-/*----------------------
+/* ----------------------
   メッセージ
-------------------------*/
+------------------------ */
+
 /* メッセージ */
 .el_msg {
   /* 文字設定 */
   text-align: center;
   font-weight: bold;
-  font-size: min(calc(1.875rem + ((1vw - 0.9rem) * 1.4881)), 1.875rem);
+  @include m.viewport-scale(font-size, lg, 30px, md, 20px);
   @include m.letterSpacingAdjustment(0.05em);
   @include m.lineHeightAdjustment(1.666666);
 
+  @include m.media-query(md) {
+    font-size: 1.25rem;
+    @include m.lineHeightAdjustment(1.5);
+  }
+
   /* 余白設定 */
-  margin: 0 0 60px 0;
+  margin: 0 0 60px;
+
+  @include m.media-query(md) {
+    margin: 0 0 30px;
+  }
 
   /* フォント調整 */
   &::before {
     margin-top: -3px;
+
+    @include m.media-query(md) {
+      margin-top: 0;
+    }
   }
 
   &::after {
     margin-bottom: -3px;
+
+    @include m.media-query(md) {
+      margin-bottom: 0;
+    }
   }
 }
 
-/*----------------------
+/* ----------------------
   メディア
-------------------------*/
+------------------------ */
+
 /* メディア */
 .bl_media {
   display: flex;
   align-items: center;
+
+  @include m.media-query(md) {
+    display: block;
+  }
 }
 
 /* メディア（文字のまとまり） */
 .bl_media_body {
   width: 44%;
   margin-right: 12%;
+
+  @include m.media-query(md) {
+    width: 100%;
+  }
 }
 
 /* メディア（文字） */
@@ -368,7 +741,12 @@
   font-weight: bold;
   @include m.letterSpacingAdjustment(0.05em);
   @include m.lineHeightAdjustment(1.875);
+
   margin: 0;
+
+  @include m.media-query(md) {
+    margin-bottom: 30px;
+  }
 
   /* フォント調整 */
   &::before {
@@ -384,68 +762,35 @@
 .bl_media_imgWrapper {
   width: 44%;
 
+  @include m.media-query(md) {
+    width: 100%;
+  }
+
   /* 余白設定 */
   margin: 0;
 
   /* メディア（画像） */
   & > img {
     width: 100%;
+
+    @include m.media-query(md) {
+      aspect-ratio: 345 / 150;
+      -o-object-fit: cover;
+      object-fit: cover;
+      -o-object-position: center bottom;
+      object-position: center bottom;
+    }
   }
 }
 
-/*----------------------
-  半透明テキスト
-------------------------*/
-/* 半透明テキスト */
-.el_opacityTxt {
-  opacity: 5%;
-
-  /* 文字設定 */
-  color: #171717;
-  font-weight: bold;
-  font-size: 5.625rem;
-  @include m.letterSpacingAdjustment(0.05em);
-  white-space: nowrap;
-
-  /* 右寄せ */
-  &.el_opacityTxt__right {
-    display: flex;
-    justify-content: right;
-  }
-
-  /* 白 */
-  &.el_opacityTxt__white {
-    opacity: 10%;
-    color: #ffffff;
-  }
-}
-
-/*----------------------
-  背景画像
-------------------------*/
-/* 背景画像 */
-.el_bgimg {
-  background-position: center center;
-  background-size: cover;
-
-  /* Worksセクション用 */
-  &.el_bgimg__works {
-    background-image: url(../img/works-bgi@2x.jpg);
-  }
-
-  /* Contactセクション用 */
-  &.el_bgimg__contact {
-    background-image: url(../img/contact-bgi@2x.jpg);
-  }
-}
-
-/*----------------------
+/* ----------------------
   カード
-------------------------*/
+------------------------ */
+
 /* カード */
 .bl_card {
-  box-shadow: 0 0 6px #000000;
-  background-color: #ffffff;
+  box-shadow: 0 0 6px #000;
+  background-color: #fff;
 }
 
 /* カード（（画像のラッパー） */
@@ -492,6 +837,12 @@
     /* 余白設定 */
     margin-right: 2%;
     margin-bottom: 30px;
+
+    @include m.media-query(md) {
+      width: 92.753623%;
+      margin-right: auto !important;
+      margin-left: auto;
+    }
   }
 
   & > .bl_card:nth-of-type(3n) {
@@ -509,9 +860,10 @@
   margin-bottom: 50px;
 }
 
-/*----------------------
+/* ----------------------
   ボタン
-------------------------*/
+------------------------ */
+
 /* 角が丸いボタン */
 .el_roundedBtn {
   /* 文字は上下中央揃え */
@@ -532,6 +884,7 @@
   box-shadow: 0 0 6px #1b1310;
   border-radius: 29.5px;
   border: none;
+  cursor: pointer;
 
   /* 文字設定 */
   color: #171717;
@@ -541,17 +894,26 @@
   @include m.letterSpacingAdjustment(0.05em);
 }
 
-/*----------------------
+/* ----------------------
   画像付きリンク
-------------------------*/
+------------------------ */
+
 /* 画像付きリンク */
 .bl_imgLinks {
   display: flex;
   list-style: none;
 
+  @include m.media-query(md) {
+    display: block;
+  }
+
   /* 余白設定 */
   padding: 0;
   margin: 0;
+
+  @include m.media-query(md) {
+    margin-bottom: -30px;
+  }
 }
 
 /* 画像付きリンク（画像） */
@@ -561,19 +923,24 @@
   background-size: cover;
   aspect-ratio: 3/2;
 
+  // 余白
+  @include m.media-query(md) {
+    margin-bottom: 30px;
+  }
+
   /* Hearing用 */
   &.bl_imgLinks_img__hearing {
-    background-image: url(../img/service-img01@2x.jpg);
+    background-image: url("../img/service-img01@2x.jpg");
   }
 
   /* Planning用 */
   &.bl_imgLinks_img__planning {
-    background-image: url(../img/service-img02@2x.jpg);
+    background-image: url("../img/service-img02@2x.jpg");
   }
 
   /* Direction用 */
   &.bl_imgLinks_img__direction {
-    background-image: url(../img/sevice-img03@2x.jpg);
+    background-image: url("../img/sevice-img03@2x.jpg");
   }
 }
 
@@ -592,30 +959,47 @@
   text-decoration: none;
 
   /* 文字設定 */
-  color: #ffffff;
+  color: #fff;
   font-size: 2.5rem;
   font-weight: bold;
   font-style: italic;
   @include m.letterSpacingAdjustment(0.05em);
 
+  @include m.media-query(md) {
+    font-size: 1.25rem;
+  }
+
   /* ホバー時、フォーカス時の設定 */
   &:hover,
   &:focus {
-    background-color: rgba(40, 47, 53, 70%);
+    background-color: rgb(40 47 53 / 70%);
   }
 }
 
-/*----------------------
+/* グレー */
+.bl_imgLinks_gray {
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(23 23 23 / 30%);
+}
+
+/* ----------------------
   CTAエリア
-------------------------*/
+------------------------ */
+
 /* CTAエリア（文字） */
 .bl_cta_txt {
   /* 余白設定 */
   margin-top: 0;
   margin-bottom: 45px;
 
+  @include m.media-query(md) {
+    margin-bottom: 35px;
+  }
+
   /* 文字設定 */
-  color: #ffffff;
+  color: #fff;
   text-align: center;
   font-size: 1.25rem;
   font-weight: bold;
@@ -623,13 +1007,15 @@
   @include m.lineHeightAdjustment(1.45);
 }
 
-/*----------------------
+/* ----------------------
   フッター
-------------------------*/
+------------------------ */
+
 /* コピーライト */
 .el_copyRight {
   /* 余白設定 */
   margin: 0;
+  text-align: center;
 
   /* 文字設定 */
   font-size: 0.875rem;
@@ -637,14 +1023,16 @@
   @include m.letterSpacingAdjustment(0.05em);
 }
 
-/*----------------------
+/* ----------------------
   お問い合わせフォーム
-------------------------*/
+------------------------ */
+
 /* お問い合わせフォーム */
 .bl_contactForm {
   max-width: 730px;
 
   /* 余白設定 */
+
   /* 画面幅が700px以下になったとき、
         ギチギチにならないように左右に15pxずつ余白を設ける */
   padding: 0 15px;
@@ -652,7 +1040,7 @@
 }
 
 /* お問い合わせフォーム（入力欄のまとまり） */
-.bl_contactForm_input {
+.bl_contactForm_inner {
   /* 余白設定 */
   margin-bottom: 80px;
 }
@@ -661,6 +1049,9 @@
 .bl_contactForm_item {
   /* 余白設定 */
   margin-bottom: 22px;
+
+  // ボーダーを消去
+  border: none;
 
   input[type="text"],
   input[type="tel"],
@@ -687,15 +1078,20 @@
   }
 }
 
-/*　お問い合わせフォーム（項目名）　*/
+/* お問い合わせフォーム（項目名） */
 .bl_contactForm_ttl {
   display: block;
+  white-space: nowrap;
 
   /* 文字設定 */
   @include m.letterSpacingAdjustment(0.05em);
 
   /* 余白設定 */
-  margin: 0 0 4px 0;
+  margin: 0 0 4px;
+
+  @include m.media-query(md) {
+    margin: 0 0 12px;
+  }
 
   /* お問い合わせフォーム（入力欄下の余白が小さい場合の余白設定） */
   &.bl_contactForm_ttl__smsp {
@@ -707,6 +1103,12 @@
 .bl_checkboxUnit {
   /* 横並びにする */
   display: flex;
+
+  @include m.media-query(md) {
+    /* 縦並びにする */
+    flex-direction: column;
+    margin-bottom: -4px;
+  }
 }
 
 /* チェックボックス */
@@ -714,6 +1116,10 @@
   /* チェックボックスとラベルを中央揃えにする */
   display: inline-flex;
   align-items: center;
+
+  @include m.media-query(md) {
+    margin-bottom: 4px;
+  }
 
   input[type="checkbox"] {
     position: relative;
@@ -732,7 +1138,6 @@
       display: inline-block;
       height: 10px;
       width: 10px;
-
       content: "";
       box-sizing: border-box;
       border: 1px solid #141414;
@@ -745,7 +1150,7 @@
 
       /* チェックマーク設定 */
       content: "\f00c";
-      font-family: "Font Awesome 5 Free";
+      font-family: "Font Awesome 5 Free", sans-serif;
       font-weight: 900;
       font-size: 0.5rem;
       opacity: 0;
@@ -762,28 +1167,29 @@
 
     /* 文字設定 */
     @include m.letterSpacingAdjustment(0.05em);
+
     white-space: nowrap;
   }
 }
 
-/*----------------------
+/* ----------------------
   ヘルパー
-------------------------*/
+------------------------ */
+
 /* PC幅でのみ表示 */
 .lg_only {
   display: block !important;
+
+  @include m.media-query(md) {
+    display: none !important;
+  }
 }
 
 /* タブレット幅以下でのみ表示 */
 .md_only {
   display: none !important;
-}
 
-/* グレー */
-.bg_gray30 {
-  display: inline-block;
-  height: 100%;
-  width: 100%;
-
-  background-color: rgba(23, 23, 23, 30%);
+  @include m.media-query(md) {
+    display: block !important;
+  }
 }
