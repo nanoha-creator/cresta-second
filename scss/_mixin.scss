@@ -1,10 +1,10 @@
 /* stylelint-disable scss/at-mixin-pattern */
 @use "variables" as v;
 
-/* ------------------------------------------------
-    ファイル名：_mixin.scss
-    機能：mixinを記述する
--------------------------------------------------- */
+// ------------------------------------------------
+//    ファイル名：_mixin.scss
+//    機能：mixinを記述する
+// ------------------------------------------------
 // ----------
 // 数値から単位を除去する
 // ----------
@@ -75,10 +75,10 @@
   }
 }
 
-/* ----------
-    line-heightを調節する（XDとwebで仕様が異なるため） 
-    $line-height: line-heightの指定値
----------- */
+// ----------
+//    line-heightを調節する（XDとwebで仕様が異なるため）
+//    $line-height: line-heightの指定値
+// ----------
 @mixin lineHeightAdjustment($line-height) {
   line-height: $line-height;
 
@@ -95,10 +95,10 @@
   }
 }
 
-/* ----------
-    letter-spacingを調節する（XDとwebで仕様が異なるため） 
-    $letter-spacing: letter-spacingの指定値
----------- */
+// ----------
+//    letter-spacingを調節する（XDとwebで仕様が異なるため）
+//    $letter-spacing: letter-spacingの指定値
+// ----------
 @mixin letterSpacingAdjustment($letter-spacing) {
   letter-spacing: $letter-spacing;
 
