@@ -11,6 +11,11 @@ body {
   line-height: normal;
 }
 
+.wrapper {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 button,
 input,
 select,
