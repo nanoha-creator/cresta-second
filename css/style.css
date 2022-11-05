@@ -295,11 +295,11 @@ img {
   display: block;
 }
 
-.bl_toggleBtn {
+.bl_hamburgerBtn {
   display: none;
 }
 @media screen and (max-width: 768px) {
-  .bl_toggleBtn {
+  .bl_hamburgerBtn {
     position: relative;
     z-index: 3;
     display: block;
@@ -317,7 +317,7 @@ img {
 }
 
 @media screen and (max-width: 768px) {
-  .bl_toggleBtn_bar {
+  .bl_hamburgerBtn_bar {
     position: absolute;
     display: block;
     width: 30px;
@@ -326,34 +326,34 @@ img {
     transition: all 0.3s;
   }
 
-  .bl_toggleBtn_bar.bl_toggleBtn_bar__top {
+  .bl_hamburgerBtn_bar.bl_hamburgerBtn_bar__top {
     top: 0;
   }
 
-  .bl_toggleBtn_bar.bl_toggleBtn_bar__mid {
+  .bl_hamburgerBtn_bar.bl_hamburgerBtn_bar__mid {
     top: 50%;
     transform: translateY(-50%);
   }
 
-  .bl_toggleBtn_bar.bl_toggleBtn_bar__bottom {
+  .bl_hamburgerBtn_bar.bl_hamburgerBtn_bar__bottom {
     bottom: 0;
   }
 }
 
 @media screen and (max-width: 768px) {
-  .bl_toggleBtn.is_close .bl_toggleBtn_bar.bl_toggleBtn_bar__top {
+  .bl_hamburgerBtn.is_close .bl_hamburgerBtn_bar.bl_hamburgerBtn_bar__top {
     transform: translate(5px, 0) rotate(45deg);
   }
 }
 
 @media screen and (max-width: 768px) {
-  .bl_toggleBtn.is_close .bl_toggleBtn_bar.bl_toggleBtn_bar__mid {
+  .bl_hamburgerBtn.is_close .bl_hamburgerBtn_bar.bl_hamburgerBtn_bar__mid {
     opacity: 0;
   }
 }
 
 @media screen and (max-width: 768px) {
-  .bl_toggleBtn.is_close .bl_toggleBtn_bar.bl_toggleBtn_bar__bottom {
+  .bl_hamburgerBtn.is_close .bl_hamburgerBtn_bar.bl_hamburgerBtn_bar__bottom {
     transform: translate(5px, -17px) rotate(-45deg);
   }
 }
